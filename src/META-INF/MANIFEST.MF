@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: com4j.jar ApacheJMeter_core.jar ApacheJMeter_components.ja
+ r
+
