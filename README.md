@@ -1,195 +1,252 @@
-# Jmeter Citrix Plugin
-Плагин позволяет взаимодействовать с протоколом Citrix посредством клиента Citrix Receiver.
+# Citrix client 
 
-Скачать можно [здесь](https://github.com/pflb/Jmeter-Citrix-Plugin/releases/download/v1.0/CitrixICA.zip).
+The plugin allows you to communicate with the Citrix protocol via the Citrix Receiver client.
 
-## Введение
+You can download it [here][1].
 
-Использование HP LoadRunner для записи и воспроизведения скриптов на Citrix не всегда подходит для заказчиков ввиду большой стоимости первого. Поэтому было решено попробовать подружить с Citrix`ом JMeter. В этой статье речь пойдет об установке и использовании данного плагина.
+[1]: (https://github.com/pflb/Jmeter-Citrix-Plugin/releases/download/v1.0/CitrixICA.zip)
 
-## Возможнсти
+## Introduction
 
-- Запись действий пользователя (ввод с клавиатуры, нажатие и передвижение мыши) с выбором нужных источников ввода.
-- Воспроизведение записанного скрипта.
-- Запуск сессии посредством .ica файлов.
-- Запуск сессий с выбранными параметрами (размер области Citrix, глубина цветопередачи).
-- Возможность (не)сохранять сделанные скриншоты во время записи/воспроизведения.
-- Возможность параметризовать любую команду/параметр в семплерах.
-- Возможность указать множитель всех thinktime`ов.
-- Возможность запускать сессии без блокировки ввода пользователя.
-- Широкие настройки синхронизации.
-- Возможность указать (в теории) бесконечное количество хеш-сумм для синхронизации.
-- Интегрирован OCR (Optical Character Recognition) движок для распознавания текста.
-- Настройка, позволяющая (не)запускать новую сессию при каждой итерации.
-- Поддержка Remote Start.
-- Бесплатность, открытый исходный код.
+---
+Using HP LoadRunner to record and play scripts on Citrix is not always suitable for customers due to the high cost of 
+the first one. So it was decided to try to make friendship with JMeter Citrix. This article will talk about installing 
+and using this plugin.
 
-## Ограничения
+## Opportunities 
 
-- Работает только с JRE x86. При использовании 64-х битной версии, не находит COM класс.
-- На данный момент невозможно запускать сессии в Windowless режиме (без отображения окна).
-- В некоторых случаях игнорируется параметр цветопередачи.
+---
+- Recording user action (keyboard input, mouse click and movement) with the choice of the 
+right input sources.
+- Playing the recorded script.
+- Running the session via .ica files.
+- Running sessions with the selected parameters (Citrix area size, colour depth).
+- Ability to (not) save screenshots taken during recording/playback.
+- The ability to parameterise any command/parameter in the samplers.
+- The ability to specify the multiplier of all *thinktime*.
+- The ability to run sessions without blocking the user's input.
+- Wide synchronisation settings.
+- Ability to specify (in theory) an infinite number of hash sums for synchronisation.
+- OCR (Optical Character Recognition) engine for text recognition is integrated.
+- A setup that allows you not to run a new session every time you iterate.
+- Remote Start support.
+- Free, open source.
 
-## Установка плагина
+## Restrictions 
 
-### Что нам нужно для работы
+---
+- Only works with JRE x86. When using the 64-bit version, it doesn't find a COM class.
+- At the moment, it is impossible to run sessions in Windowless mode (without displaying a window).
+- In some cases, the colour rendering parameter is ignored.
 
-Для корректной работы плагина нужно следующее:
+## Installation of the plugin 
 
-- **JMeter** для работы плагина;
-- **Библиотека com4j** для работы с COM (нужно для плагина, скачать можно здесь);
-- **JRE x86** версии 7 и выше для корректной работы COM4J и плагина (можно скомпилировать и под JRE 6-й версии);
-- **Citrix Receiver**, через который будет происходить запись и воспроизведение.
+---
+### Requirement
+The following is necessary for the plugin to work correctly:
+- JMeter for the plugin to work;
+- Com4j library to work with COM (need for the plugin, download here);
+- JRE x86 version 7 and above for correct operation of COM4J and plugin (can be compiled for JRE version 6);
+- Citrix Receiver, through which recording and playback will take place.
 
-### Установка плагина
+### Installation
+I won't describe how to install JMeter and JRE, I think everyone already knows that. Installing Citrix Receiver is 
+not difficult either, so let's move on to installing the plugin right away. To install the plugin itself, it is enough
+to copy the `.jar` files of the com4j library to the lib folder at the root of JMeter, and the plugin itself to `lib/ext`
+. But to be able to write/play, you also need to add a record to the registry (the path is for Windows x64, for 32-bit 
+editions you need to remove the Wow6432Node subdirectory from the path):
+```
+Windows Registry Editor Version 5.00
 
-Не стану описывать, как устанавливать JMeter и JRE, думаю, всем это уже знакомо. Установка Citrix Receiver тоже не вызывает трудностей, поэтому перейдем сразу к установке плагина. Для установки самого плагина достаточно скопировать .jar файлы com4j библиотеки в папку lib в корне JMeter, а сам плагин в lib/ext. Но для возможности записи/воспроизведения нужно так-же добавить запись в реестре (путь приведен для Windows x64, для 32-х разрядных изданий из пути нужно убрать подкаталог Wow6432Node):
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Citrix\ICA Client\CCM]
+"AllowSimulationAPI"=dword:00000001
+```
+You can save this text to a text file with the `.reg` extension and add a record to the registry by running this file.
 
-	Windows Registry Editor Version 5.00
-	
-	[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Citrix\ICA Client\CCM]
-	"AllowSimulationAPI"=dword:00000001
+## Script recording
 
-Этот текст можно сохранить в текстовый файл с расширением .reg и добавить запись в реестр, запустив этот файл.
-
-## Запись скрипта
-
-### Подготовка к записи
+---
+### Preparing
 ![Citrix recorder](doc/images/CitrixRecorder.jpg)
 
-Для записи скриптов нужно добавить в WorkBench элемент Citrix ICA Recorder (находится в категории Non-Test Elements) и указать там правильные параметры подключения:
+To write scripts, you need to add the Citrix ICA Recorder element to WorkBench (located in the Non-Test 
+Elements category) and specify the correct connection parameters there:
+- **ICA file location** is the path to the .ica file to initialise the session. If specified, the remaining connection parameters will be ignored. You can select via GUI by pressing the Browse button;
+- **Host** - server address;
+- **Port** is a port to connect. If not specified, a standard one is used;
+- **User Name** - the name of the user who is allowed access to the published application;
+- **User Password** - user password;
+- **Domain** is a user domain that can be empty;
+- **Application** - the name of the published application;
 
-- **ICA file location** - путь к файлу .ica для инициализации сессии. Если указан, остальные параметры подключения будут игнорироваться. Можно выбрать через GUI, нажав кнопку Browse;
-- **Host** - адрес сервера;
-- **Port** - порт для подключения. Если не указан, используется стандартный;
-- **User Name** - имя пользователя, которому разрешен доступ к опубликованному приложению;
-- **User Password** - пароль пользователя;
-- **Domain** - домен пользователя, может быть пустым;
-- **Application** - имя опубликованного приложения;
+You should also adjust the recording parameters:
+- **Save screenshots** - if enabled, the screenshots taken during recording will be saved;
+- **Screenshot folder** is the path to the folder where the screenshots will be saved. The Browse button allows you 
+  to select a path via GUI;
+- **Resolution (WxH)** - specifies the size of the Citrix application workspace (maximum window size). 
+  Specified in <WIDE>x<HIGH> format, separator - Latin x;
+- **Colour 24 bit** - indicates what colour depth to use;
+- **Record:** - indicates which events to record and which not. Possible options: Keyboard - record keyboard events,
+  Mouse Clicks - record mouse button presses, Mouse Move - record mouse cursor movement events;
+- **Default ICA Config** - indicates which ICA Config Element to use in the recorded samplers by default (this will be described in detail below);
+- **Select controller** - indicates which controller to place the recorded samplers in;
 
-Так же следует настроить параметры записи:
+### Recording of the session
 
-- **Save screenshots** - если включено, скриншоты, полученные во время записи, будут сохранены;
-- **Screenshot folder** - путь к папке, в которой будут сохраняться скриншоты. Кнопка Browse позволяет выбрать путь через GUI;
-- **Resolution (WxH)** - указывает размер рабочей области Citrix приложения (максимальный размер окна). Указывается в формате <ШИРИНА>x<ВЫСОТА>, разделитель - латинская x;
-- **Color 24 bit** - указывает, какую глубину цветопередачи использовать;
-- **Record:** - указывает, какие события записывать, а какие нет. Возможные варианты: Keyboard - записывать события клавиатуры, Mouse Clicks - записывать нажатия кнопок мыши, Mouse Move - записывать события перемещения курсора мыши;
-- **Default ICA Config** - указывает, какой ICA Config Element использовать в записанных семплерах по умолчанию (об этом будет подробно расписано далее);
-- **Select controller** - указывает, в какой контроллер помещать записанные семплеры;
+Once all the settings have been entered, you can connect to the session and start recording. There is a group 
+of Recording controls buttons in the record to enable/off the record. The Connect button simply connects to the 
+session. The record doesn't start and can be enabled later. The Record button connects and immediately starts 
+recording the selected actions. The Stop button allows you to stop recording and disconnect from the session.
+At the same time, the session itself (Citrix Receiver window) does not close. Also, when you exit a session
+(for example, when you close an application), the LogOut event automatically stops recording.
 
-### Запись сессии
+There is a group of Step controls buttons to control the steps. It becomes available after the recording mode is 
+enabled. The Add Step button saves the current step and adds it to the selected controller. At the same time,
+the entry begins to take place in a new sampler. The Restart Step button simply clears the current step of
+all actions (useful in case of an error). The Start Tag button labels that all commands written before pressing
+the End Tag button will be ignored and text entered by the user will be inserted instead. The End Tag button,
+respectively, puts the end mark for the Start Tag command. The Synchronise button takes a screenshot of the entire
+Citrix session area and calls the synchronisation configuration dialogue, which I want to discuss in more detail.
 
-После того, как все настройки были введены, можно подключиться к сессии и начать запись.
-Для включения/выключения записи в рекордере есть группа кнопок **Recording controls**.
-Кнопка **Connect** просто выполняет подключение к сессии.
-При этом запись не начинается и ее можно включить позже.
-Кнопка **Record** подключается и сразу же начинает записывать выбранные действия.
-Кнопка **Stop** позволяет остановить запись и отключиться от сессии.
-При этом сама сессия (окно Citrix Receiver) не закрывается.
-Так же, при выходе из сессии (например, при закрытии приложения) по событию LogOut происходит автоматическая остановка записи.
+### Synchronisation
+At the moment, 2 synchronisation options have been implemented: by screenshot and by text (by using OCR).
 
-Для управления шагами присутствует группа кнопок **Step controls**. Она становится доступной после включения режима записи.
-Кнопка **Add Step** сохраняет текущий шаг и добавляет его в выбранный контроллер. При этом запись начинает происходить в новый семплер.
-Кнопка **Restart Step** просто очищает текущий шаг от всех действий (полезно в случае ошибки).
-Кнопка **Start Tag** ставит метку, что все команды, записанные до нажатия кнопки **End Tag**, будут проигнорированы и вместо них будет вставлен текст, введенный пользователем.
-Кнопка **End Tag**, соответственно, ставит метку окончания действия команды **Start Tag**.
-Кнопка **Synchronize** делает скриншот всей области Citrix сессии и вызывает диалог настройки синхронизации, на чем я хочу остановиться более подробно.
-
-## Синхронизация
-
-На данный момент реализовано 2 варианта синхронизации: по скриншоту и по тексту (путем использования OCR).
-
-#### Синхронизация по скриншотам
+####Synchronisation by screenshots
 ![Synchronization](doc/images/CitrixRecorder_sync.jpg)
 
-Для синхронизации по скриншотам, нужно выбрать область синхронизации (красный полупрозрачный прямоугольник) и выставить правильные параметры.
-- **Wait sync** - указывает, нужно ли ждать момента, когда будет найдена область с указанным хешом и сколько по времени (максимум) ждать. Второй параметр, **try every**, указывает, как часто делать проверку. Параметры задаются целыми числами в миллисекундах.
-- **Delta x, y** - указывает, на каком максимальном удалении по ширине и высоте соответственно искать нужную область. Полезно в случаях, если элемент, по которому проводится синхронизация, может незначительно сдвинуться. Но, совершенно бесполезная вещь, если элемент меняет свой размер, т.к. хеш-сумма скриншота будет другой.
-- **Set sampler error if failed** - указывает, помечать ли семплер провалившимся в случае, если за указанное время не удалось найти указанную область. Если не стоит, семплер будет считаться всегда успешным и единственное, как можно будет отличить, появилась ли область или нет, проверять значение переменной, указанной в следующем пункте.
-- **Write result in variable named** - указывает имя переменной, в которую записать успешность синхронизации. На выходе в переменной будет true, если область найдена, иначе false.
-Такой вид синхронизации происходит путем сравнения хеш-сумм скриншотов  указанных областей при записи и при воспроизведении. Соответственно, изменение цвета одного пикселя при воспроизведении изменит хеш-сумму скриншота до неузнаваемости, что приведет к ошибке сравнения и область будет считаться не найденной.
+To synchronise by screenshot, select the synchronisation area (red translucent rectangle) and set the correct parameters.
 
-#### Синхронизация по тексту
+- **Wait sync** - indicates whether to wait for the area with the specified hash to be found and how long (maximum) to wait. 
+  The second parameter, try every, indicates how often to do the check. Parameters are given by integers in milliseconds.
+- **Delta x, y** - indicates at what maximum distance to look for the desired area in width and height, respectively. Useful 
+  in cases where the element on which synchronisation is performed can shift slightly. But it's completely useless if the 
+  element changes its size, because the hash sum of the screenshot will be different.
+
+- **Set sampler error if failed** - indicates whether to mark the sampler to failed if the specified area could not be 
+  found in the specified time. If not worth it, the sampler will always be considered successful and the only way to
+  distinguish whether an area has appeared or not will be checked for the value of the variable specified in the next paragraph.
+- **Write result in variable named** - specifies the name of the variable to which to write the success of 
+  synchronisation. The output in the variable will be true if the area is found, otherwise false. This type of 
+  synchronisation occurs by comparing the hash sum screenshots of these areas when recording and playing. Accordingly, 
+  changing the colour of one pixel during playback will change the hash sum of the screenshot beyond recognition, which
+  will lead to a comparison error and the area will be considered not found.
+  
+#### Synchronisation by text
 ![OCR](doc/images/CitrixRecorder_ocr.jpg)
 
-Для синхронизации по тексту, нужно так же выбрать область экрана, в которой будет распознан текст.
-Так же необходимо указать два параметра: **OCR config handle** - строка, указанная в тест-элементе **OCR Config** в поле **OCR Handle ** (об этом далее), по которой происходит выбор настроенного OCR движка, который будет использоваться для распознавания, и **OCR result variable** - имя переменной, в которую будет записан результат.
-В случае, если распознать ничего не удалось, переменная будет создана и инициализирована пустой строкой.
+To synchronise by text, you also need to select the area of the screen where the text will be recognised. You also 
+need to specify two parameters: OCR config handle - the string specified in the OCR Config test element in the 
+OCR Handle  field (about this later), which selects the configured OCR engine to be used for recognition, 
+and OCR result variable - the name of the variable to which the result will be written. If nothing can be recognised, 
+the variable will be created and initialised with an empty string.
 
-## Подготовка к воспроизведению
+## Preparing for playback
+After recording the script, you should get a test plan with a controller and Citrix ICA Samplers inside. At least 
+one Citrix ICA Config item is required to play the session.
 
-После записи скрипта, у вас должен получиться тест-план с контроллером и Citrix ICA Sampler`ами внутри.
-Для воспроизведения сессии необходим как минимум один **Citrix ICA Config** элемент.
-
-### Конфигурация воспроизведения
+### Playback configuration.
 ![Config](doc/images/CitrixConfig.jpg)
 
-**Citrix ICA config** выглядит очень похожим на **Citrix ICA Recorder**.
-У него точно такие же параметры подключения, поэтому описывать их здесь нет смысла, стоит только упомянуть, что все поля в конфигурации подключения могут быть параметризованы, а эти значения будут использованы при инициализации сессии, то есть при выполнении первого попавшегося **Citrix ICA Sampler**.
-Например, можно смело использовать **CSV Data Set Config** для параметризации полей.
-Поле **Citrix Config Handle** должно быть уникальным для всех таких конфигов.
-По нему семплеры определяют, какие настройки подключения использовать и подцепляют сессию для продолжения теста.
+**Citrix ICA config** looks very similar to **Citrix ICA Recorder**. It has exactly the same connection parameters, so there 
+is no point in describing them here, just mention that all the fields in the connection configuration can be 
+parameterised, and these values will be used when initialising the session, that is, when performing the first 
+**Citrix ICA Sampler** you come across. For example, you can safely use **CSV Data Set Config** to parameterise fields.
+The **Citrix Config Handle** field should be unique to all such configs. From it, the samplers determine which connection
+settings to use and hook up the session to continue the test.
 
-Настройки воспроизведения сессий отличаются от таковых в рекордере. Остановлюсь на несовпадениях:
-- **New session each iteration** - если указано, при каждой итерации будет создаваться новая сессия. Старая же, если она не закрыта, останется активной, но будет бездействовать.
-- **Replay mode** - если указано, то весь ввод в запущенные сессии будет запрещен. Иначе, пользователь сможет использовать мышь/клавиатуру для ввода данных в открытое приложение. Нужно скорее для отладки.
-- **Output mode** - режим отображения окна. Если указано Normal, окно будет выводиться на экран. Если указано Windowless - окно не будет отображаться, тем самым экономя ресурсы нагрузочных станций (в текущей версии не удалось добиться результата, Receiver игнорирует данную настройку).
-- **Use sleep times** - если указано, все записанные/введенные в ручную задержки будут воспроизводиться. Так же можно указать множитель, на который будут умножаться времена ожидания (только для команд **SleepTime**).
-- **Unlock all sessions** и **Lock all sessions** - разблокирует и блокирует ввод во всех активных сессиях, т.е. меняет параметр **Replay mode** на "лету". Работает только с теми сессиями, которые запущены на активном JMeter`е и не работает при запуске на удаленных серверах.
-
-### Конфигурация OCR
+The session playback settings are different from those in the record. I'll stop at the discrepancies:
+- **New session each iteration** - if specified, a new session will be created each iteration. The old one, if not 
+  closed, will remain active, but will be inactive.
+- **Replay mode** - if specified, all input in running sessions will be denied. Otherwise, the user will be able to 
+  use the mouse/keyboard to enter data into an open application. It's necessary to debug it soon.
+- **Output mode** is the mode of displaying a window. If Normal is specified, the window will be displayed. 
+  If Windowless is specified, the window will not be displayed, thus saving loadstation resources (in the current 
+  version it was not possible to achieve the result, Receiver ignores this setting).
+- **Use sleep times** - if specified, all recorded/injected manual delays will be played. You can also specify a 
+  multiplier by which waiting times will multiply (only for SleepTime commands).
+- **Unlock all sessions** and Lock all sessions - unlocks and blocks input in all active sessions, i.e. changes the
+  Replay mode parameter to "flight." Works only with those sessions that are running on the active JMeter and do not 
+  work when running on remote servers.
+  
+### OCR configuration
 ![Config](doc/images/OCRConfig.jpg)
 
-Если при записи были записаны действия распознавания текста, то так же необходимо добавить элемент **OCR Config**.
-Он достаточно прост и имеет всего два параметра:
-- **OCR handle** - параметр, отличающийся от **Citrix ICA Handle** лишь тем, что идентифицирует не Citrix ICA Config, а OCR Config. Должен быть уникальным для всех OCR Config.
-- **Таблица** - в левой колонке указывается путь к изображению, с помощью которого происходит обучение, в правой - диапазон символом в изображении (задается в формате <Начальный символ>-<Конечный символ> без угловых скобок и с разделителем в виде тире).
-Обучающие изображения - изображение, на котором по порядку отпечатаны символы (можно стройкой, можно таблицей).
-Обязательное условие - диапазон кодов указанных символов должен быть непрерывен и направлен в сторону увеличения.
-На каждом изображении должен быть указан лишь один диапазон.
-
-### Описание семплеров
+If text recognition actions were recorded during recording, you should also add an OCR Config element. 
+It's quite simple and has only two parameters:
+- **OCR handle** is a parameter that differs from Citrix ICA Handle only in that it does not identify Citrix ICA Config,
+  but OCR Config. Must be unique to all OCR Config.
+- **Table** - the left column indicates the path to the image with which the training takes place, in the right 
+  column - the symbol in the image (specified in the format <Interial symbol>-<Final character> without corner 
+  brackets and with a separator in the form of a dash). Educational images are an image on which symbols are printed 
+  in order (can be built, you can use a table). A prerequisite is that the range of codes of the specified characters
+  must be continuous and directed upwards. Each image should have only one range.
+  
+### Sampler description
 ![Citrix sampler](doc/images/CitrixSampler.jpg)
 
-Кроме стандартных названия и комментария, Citrix ICA Sampler содержит два поля.
-Первое - **Citrix Config Handle** - указывает, какие настройки использовать для запуска сессии или из какого пула взять уже активную сессию.
-Второе поле содержит список всех команд, которые он будет выполнять.
-Это поле может быть полность параметризовано с помощью переменных JMeter`а.
+In addition to the standard title and comment, Citrix ICA Sampler contains two fields. The first one, Citrix Config 
+Handle, indicates what settings to use, to start a session or from which pool to take an already active session. 
+The second field contains a list of all the commands it will execute. This field can be fully parameterised using 
+JMeter's variables.
 
+###Command description
 
-### Описание команд
+Each command consists of the name of the command and parameters, each command starts with a new line. If there is
+a grid sign (#) at the beginning of the line, the line is considered a comment and will not be executed. An empty
+sampler will start the session (unless it was initiated) and do nothing else. After the command, there should be
+a colon and a list of parameters is listed separated by a comma. All commands, except for synchronisation by 
+screenshots, have a fixed number of parameters. Now more about the teams.
+- **SleepTime** is a team that delays the delay. Its only parameter is the time in milliseconds, during which the
+  flow will stand idle. Set by an integer.
+- **KeyDown and KeyUp** - presses and releases the key on the keyboard, respectively. Adopts 2 parameters: 
+  the first is the key code that will be pressed/released. The second is a modifier (Alt, Control, etc.), 
+  which is not currently in use. But without him, the team will throw out an exception.
+- **MouseDown and MouseUp** - presses and releases the mouse button, respectively. Adopts 4 parameters:
+  mouse button code, click modifier, X-coordinate on the screen and Y-coordinate on the screen. The second parameter,
+  unlike KeyDown and KeyUp, is passed to the receiver, but at the moment it is not known whether it affects something 
+  (and not many applications that handle such mouse clicks).
+- **MouseDClick** is a team left over from the development stage. It will be ignored in the future. Does nothing.
+  The parameters are identical to KeyUp and KeyDown.
+- **MouseMove** - moves the mouse cursor around the screen. The parameters are identical to MouseDown and MouseUp.
+- **StartTag** - indicates that all commands before the EndTag command will be ignored, and instead text from the
+  parameters is entered. Accepts 2 parameters: the first is the time between entering characters in milliseconds,
+  the second is the text to enter. Only one-line text is supported.
+- **EndTag** - indicates the end of the StartTag command. Takes one parameter. The value of the parameter does not
+  matter by default is null.
+- **Screenshot** - synchronise. Accepts the list of hash sum areas and parameters. First there is a list of hash sums 
+  separated by a comma. Represent strings. Next is a list of parameters. The first is the coordinate X, the second is
+  the Y coordinate of the upper left corner of the area at which synchronisation will take place. The third parameter
+  is the width, the fourth parameter is the height of the area. The fifth and sixth parameters - shift along the X axis
+  and along the Y axis in both directions - the number of pixels within which the desired area will be searched if the
+  area is not found in the centre. Can help when the elements on the screen can shift. 1-6 parameter - integers.
+  The seventh parameter indicates whether it is necessary to wait for this area to appear or only to check for it.
+  It's a boolean value (true/false). The eighth parameter is the waiting time of the area, the ninth parameter is
+  the check interval. Set in milliseconds. Ignore if the seventh parameter is false. Represent integers. It is an 
+  integer. The tenth parameter is whether to set the sample error status if the area is not found. It can be true or
+  false. The last parameter is the name of the variable in which the synchronisation result will be entered: true if
+  the area is found or false if not found.
+- **OCR** is a text recognition command in the area. The first four parameters are the coordinates and size of the area,
+  the equivalents are in the Screenshot command. The fifth parameter is a string that characterises which OCR config 
+  to use for recognition. The sixth parameter is the name of the variable in which the result will be entered.
+  
+## Playing the script
+To play a recorded and parameterised script, just run the test. After passing each sample in Response Data, 
+you can see the success of each command.
 
-Каждая команда состоит из названия команды и параметров, каждая команда начинается с новой строки.
-Если в начале строки стоит знак решетки (**#**), то строка считается комментарием и выполняться не будет.
-Пустой семплер запустит сессию (если она не была инициирована) и больше ничего не сделает.
-После команды должно стоять двоеточие и перечислен список параметров через запятую.
-У всех команд, кроме синхронизации по скриншотам, фиксированное количество параметров.
-Теперь подробнее о командах.
-- **SleepTime** - команда, которая осуществляет задержку. Единственный ее параметр - время в миллисекундах, в течении которого поток будет простаивать. Задается целым числом.
-- **KeyDown** и **KeyUp** - нажимает и отпускает, соответственно, клавишу на клавиатуре. Принимает 2 параметра: первый - код клавиши, которая будет нажата/отпущена. Второй - модификатор (Alt, Control, etc.), который на данный момент не используется. Но без него команда выбросит exception.
-- **MouseDown** и **MouseUp** - нажимает и отпускает, соответственно, кнопку мыши. Принимает 4 параметра: код кнопки мыши, модификатор нажатия, X-координату на экране и Y-координату на экране. Второй параметр, в отличии от KeyDown и KeyUp, передается ресиверу, но на данный момент неизвестно, влияет ли он на что-то (да и не так много приложений, обрабатывающих подобные щелчки мышкой).
-- **MouseDClick** - команда, оставшаяся с этапа разработки. В дальнейшем она будет игнорироваться. Не выполняет ничего. Параметры идентичны KeyUp и KeyDown.
-- **MouseMove** - двигает курсор мыши по экрану. Параметры идентичны MouseDown и MouseUp.
-- **StartTag** - указывает, что все команды до команды **EndTag** будут игнорироваться, а вместо них введен текст из параметров. Принимает 2 параметра: первый - время между вводом символов в миллисекундах, второй - текст, который нужно ввести. Поддерживается лишь однострочный текст.
-- **EndTag** - указывает окончание действия команды **StartTag**. Принимает один параметр. Значение параметра не имеет значения, по умолчанию - null.
-- **Screenshot** - выполнить синхронизацию. Принимает на вход список хеш-сумм области и параметры. Сначала идет список хеш-сумм, разделенных запятой. Представляют собой строки. Далее - список параметров. Первый - координата X, второй - координата Y левого верхнего угла области, по которой  будет происходить синхронизация. Третий параметр - ширина, четвертый - высота области. Пятый и шестой параметры - сдвиг по оси X и по оси Y в оба направления - количество пикселей, в пределах которых будет выполняться поиск нужной области, если область не нашлась по центру. Может помочь в случае, когда элементы на экране могут сдвигаться. 1-6 параметр - целые числа. Седьмой параметр указывает, необходимо ли ждать появления этой области или только выполнить проверку на ее наличие. Представляет собой булево значение (true/false). Восьмой параметр - время ожидания области, девятый - интервал проверок. Задаются в миллисекундах. Игнорируются, если седьмой параметр false. Представляют собой целые числа. Десятый параметр - ставить ли семплеру статус ошибки в случае, если область не найдена. Может быть true или false. Последний параметр - имя переменной, в которую будет занесен результат синхронизации: true, если область найдена или false, если не найдена.
-- **OCR** - команда распознавания текста в области. Первые четыре параметра - координаты и размеры области, эквиваленты таковым в команде Screenshot. Пятый параметр - строка, характеризующая, какой OCR config использовать для распознавания. Шестой параметр - имя переменной, в которую будет занесен результат.
+### Tips
+If .ica files are used to initialise sessions, it is better to parameterise the field responsible for it. Since this
+file is disposable, the second thread (iteration) will not be able to run with the same file. To solve this problem, 
+you can get these files just before the session starts using, for example, a web protocol.
 
-## Воспроизведение скрипта
+If the sample fails to manage the session within 120 seconds, an attempt will be made to logout and disconnect the 
+session within another 60 seconds, after which a second attempt will be made to reconnect.
 
-Для воспроизведения записанного и параметризованного скрипта достаточно просто запустить тест.
-После прохождения каждого семплера в Response Data можно будет посмотреть успешность выполнения каждой команды.
+If in rare cases there is an error when synchronising by screenshots - do not be upset, try adding the hash sum received
+during playback to the sampler (the hash sum can be viewed on the Response Data tab in View Results Tree if there was
+an error during synchronisation).
 
-### Советы 
+If one of several actions is assumed, depending on what is displayed on the screen, you can use synchronisation without 
+standby time and conditional controllers in a loop to perform the desired action.
 
-Если для инициализации сессий используются .ica файлы - лучше параметризовать поле, отвечающее за него.
-Так как этот файл является одноразовым, второй поток (итерация) не сможет запуститься с тем же файлом.
-Для решения этой проблемы можно получать эти файлы непосредственно перед стартом сессии используя, например, веб протокол.
-
-В случае, если семплеру не удалось получить управление сессией в течении 120 секунд, будет выполнена попытка сделать logout и disconnect сессии в течении еще 60 секунд, после чего автоматически будет предпринята повторная попытка подключения.
-
-Если в редких случаях при синхронизации по скриншотам возникает ошибка - не огорчайтесь, попробуйте добавить хеш-сумму, полученную при воспроизведении, к семплеру (хеш-сумму можно просмотреть на вкладке Response Data в View Results Tree, если при синхронизации произошла ошибка).
-
-В случае, если предполагается одно из нескольких действий в зависимости от того, что выведено на экран, можно использовать синхронизацию без времени ожидания и условные контроллеры в цикле для выполнения нужного действия.
-
-При использовании клиента Citrix Receiver версии 4.4 и выше, невозможно запустить сессию с "прямыми" параметрами подключения. Только через файлы .ica.
+When using the Citrix Receiver client version 4.4 and above, it is impossible to run a session with "direct" 
+connection parameters. Only through .ica files.
