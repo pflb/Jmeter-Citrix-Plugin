@@ -3,7 +3,9 @@ package ru.pflb.jmeter.icaplugin;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.engine.util.NoThreadClone;
-import org.apache.jmeter.testelement.TestListener;
+import org.apache.jmeter.testelement.TestIterationListener;
+import org.apache.jmeter.testelement.TestStateListener;
+
 import ru.pflb.jmeter.icaplugin.ica.IcaConnector;
 
 import java.util.HashMap;
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
  * @author Иванов Владимир.
  * @version 0.0.1
  */
-public class CitrixIcaConfig extends ConfigTestElement implements TestListener, NoThreadClone {
+public class CitrixIcaConfig extends ConfigTestElement implements TestIterationListener, TestStateListener, NoThreadClone {
     private static final String PROPERTY_HANDLE = "handler";
     private static final String PROPERTY_ICA_FILE = "icafile";
     private static final String PROPERTY_HOST = "host";

@@ -8,7 +8,8 @@ package ru.pflb.jmeter.ocr;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.engine.util.NoThreadClone;
-import org.apache.jmeter.testelement.TestListener;
+import org.apache.jmeter.testelement.TestIterationListener;
+import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jmeter.testelement.property.ObjectProperty;
 import ru.pflb.ocr.OCRRecognizer;
 
@@ -20,7 +21,7 @@ import java.util.Map;
  * @author Иванов
  */
 public class OCRConfig extends ConfigTestElement
-        implements NoThreadClone, TestListener {
+        implements NoThreadClone, TestStateListener, TestIterationListener {
 
     public static final String PROPERTY_OCR_HANDLE = "OCRConfig.handle";
     public static final String PROPERTY_OCR_TABLE = "OCRConfig.table";
