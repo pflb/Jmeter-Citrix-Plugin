@@ -16,7 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to load an image file, break it into individual characters, and
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class TrainingImageLoader extends DocumentScannerListenerAdaptor {
 
-    private static final Logger LOG = Logger.getLogger(TrainingImageLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TrainingImageLoader.class);
     private int charValue = 0;
     private HashMap<Character, ArrayList<TrainingImage>> dest;
     private boolean debug = false;

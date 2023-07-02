@@ -13,7 +13,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание<br/>
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public class CitrixIcaConfigGui extends AbstractConfigGui {
-    private static final Logger L = Logger.getLogger(CitrixIcaConfigGui.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaConfigGui.class);
 
     private static final String STATIC_LABEL = "Citrix Config";
 

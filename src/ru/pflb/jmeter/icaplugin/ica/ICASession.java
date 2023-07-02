@@ -1,5 +1,7 @@
 package ru.pflb.jmeter.icaplugin.ica;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com4j.ComException;
 import com4j.EventCookie;
 import com4j.ExecutionException;
@@ -12,7 +14,6 @@ import ru.pflb.jmeter.icaplugin.ica2com.events._IKeyboardEvents;
 import ru.pflb.jmeter.icaplugin.ica2com.events._IMouseEvents;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Описание<br/>
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public class ICASession extends _IICAClientEvents {
-    private static final Logger L = Logger.getLogger(ICASession.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(ICASession.class);
     private IMouse mMouse;
 
     private boolean mRecording;
@@ -82,7 +83,6 @@ public class ICASession extends _IICAClientEvents {
         ica.desiredColor(ICAColorDepth.valueOf(colorMode));
         ica.outputMode(OutputMode.valueOf(outputMode));
     }
-
 
     public void start() throws InterruptedException {
         mConnected = false;

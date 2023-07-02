@@ -18,7 +18,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * OCR document scanner.
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
 public class OCRScanner extends DocumentScannerListenerAdaptor implements AccuracyProvider {
 
     private static final int BEST_MATCH_STORE_COUNT = 8;
-    private static final Logger LOG = Logger.getLogger(OCRScanner.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(OCRScanner.class);
     private StringBuffer decodeBuffer = new StringBuffer();
     private CharacterRange[] acceptableChars;
     private boolean beginningOfRow = false;

@@ -7,7 +7,8 @@
 package net.sourceforge.javaocr.scanner.accuracy;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a data structure to manage an OCR character recognition attempt.
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class OCRIdentification {
 
-    private static final Logger LOG = Logger.getLogger(OCRIdentification.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(OCRIdentification.class);
     private OCRComp ocrType;
     private ArrayList<Character> chars;
     private ArrayList<Double> identErrors;

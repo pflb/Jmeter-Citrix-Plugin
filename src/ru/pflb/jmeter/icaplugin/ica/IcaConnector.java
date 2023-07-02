@@ -5,7 +5,8 @@ import ru.pflb.jmeter.icaplugin.CitrixIcaRecorder;
 import ru.pflb.jmeter.icaplugin.CitrixIcaSampler;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание<br/>
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public abstract class IcaConnector {
-    private static final Logger L = Logger.getLogger(IcaConnector.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(IcaConnector.class);
 
     private static HashMap<String, ICASession> mSessions = new HashMap<>();
 

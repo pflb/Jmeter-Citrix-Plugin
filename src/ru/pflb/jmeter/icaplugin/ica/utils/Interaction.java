@@ -1,6 +1,7 @@
 package ru.pflb.jmeter.icaplugin.ica.utils;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @version 0.0.1
@@ -8,7 +9,7 @@ import java.util.logging.Logger;
  */
 
 public class Interaction {
-    private static final Logger L = Logger.getLogger(Interaction.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(Interaction.class);
 
     public enum Type {
         Keyboard, MouseClick, MouseMove

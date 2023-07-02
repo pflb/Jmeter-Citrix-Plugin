@@ -9,7 +9,8 @@ import org.apache.jmeter.testelement.TestStateListener;
 import ru.pflb.jmeter.icaplugin.ica.IcaConnector;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание<br/>
@@ -37,7 +38,7 @@ public class CitrixIcaConfig extends ConfigTestElement implements TestIterationL
     private static final String PROPERTY_REPLAY_MODE = "replaymode";
 
 
-    private static final Logger L = Logger.getLogger(CitrixIcaConfig.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaConfig.class);
     private static HashMap<String, CitrixIcaConfig> mConfigs = new HashMap<>();
 
     public CitrixIcaConfig() {

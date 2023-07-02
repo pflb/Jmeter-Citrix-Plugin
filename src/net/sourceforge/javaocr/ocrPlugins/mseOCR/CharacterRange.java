@@ -5,7 +5,8 @@
 // Please see the accompanying LICENSE.txt for details.
 package net.sourceforge.javaocr.ocrPlugins.mseOCR;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to represent a range of character codes.
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class CharacterRange {
 
-    private static final Logger LOG = Logger.getLogger(CharacterRange.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CharacterRange.class);
     /**
      * The minimum character value in this range.
      */

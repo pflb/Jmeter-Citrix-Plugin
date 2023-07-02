@@ -5,7 +5,8 @@
 // Please see the accompanying LICENSE.txt for details.
 package net.sourceforge.javaocr.scanner;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Empty implementation of DocumentScannerListener interface which can be
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
 public class DocumentScannerListenerAdaptor
         implements DocumentScannerListener {
 
-    private static final Logger LOG = Logger.getLogger(DocumentScannerListenerAdaptor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentScannerListenerAdaptor.class);
 
     public void beginDocument(PixelImage pixelImage) {
     }
