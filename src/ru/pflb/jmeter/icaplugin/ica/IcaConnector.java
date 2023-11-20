@@ -20,6 +20,7 @@ public abstract class IcaConnector {
     private static HashMap<String, ICASession> mSessions = new HashMap<>();
 
     public static ICASession newRecordingSession(CitrixIcaRecorder recorder) {
+        L.info("Конфигурация сессии");
         ICASession session = new ICASession(false);
         if (recorder.getICAFile().isEmpty()) {
             session.configureConnect(recorder.getHost(), recorder.getPort(), recorder.getUser(), recorder.getPassword(),
@@ -27,14 +28,13 @@ public abstract class IcaConnector {
         } else {
             session.configureConnect(recorder.getICAFile());
         }
-
         String[] resolution = recorder.getResolution().split("x");
         session.configureScreen(Integer.parseInt(resolution[0]), Integer.parseInt(resolution[1]),
                 recorder.getColor(), "OutputModeNormal");
 
         session.setParent(recorder);
         session.setRecordParams(recorder.getRecord());
-
+        L.info("Сессия сконфигурирована");
         return session;
     }
 

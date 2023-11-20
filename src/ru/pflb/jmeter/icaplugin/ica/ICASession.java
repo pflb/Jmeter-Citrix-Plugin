@@ -61,6 +61,7 @@ public class ICASession extends _IICAClientEvents {
     }
 
     public void configureConnect(String ICAFile) {
+        L.info("Конфигурация соединения на основе ICA файла {}", ICAFile);
         ica.icaFile(ICAFile);
     }
 
@@ -206,6 +207,7 @@ public class ICASession extends _IICAClientEvents {
     }
 
     public boolean waitConnect(int count) throws InterruptedException {
+        L.info("waitConnect " + count);
         if (mConnected) {
             return true;
         } else if (count > 4) {
@@ -261,15 +263,18 @@ public class ICASession extends _IICAClientEvents {
     private class ClientListener extends _IICAClientEvents {
         public ClientListener() {
             super();
+            L.info("подписались на события _IICAClientEvents");
         }
 
         @Override
         public void onInitializing() {
+            L.debug("onInitializing");
             super.onInitializing();
         }
 
         @Override
         public void onConnectFailed() {
+            L.debug("onConnectFailed");
             if (mParent != null)
                 mParent.onError("Connect failed");
             super.onConnectFailed();
@@ -277,6 +282,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onLogon() {
+            L.debug("onLogon");
             if (mParent != null)
                 mParent.onLogon();
             if (!mReplayMode) {
@@ -288,10 +294,12 @@ public class ICASession extends _IICAClientEvents {
             mLogonError = false;
             mDisconnected = false;
             super.onLogon();
+            L.debug("mConnected = true");
         }
 
         @Override
         public void onLogonFailed() {
+            L.debug("onLogonFailed");
             mLogonError = true;
             mConnected = false;
             if (mParent != null)
@@ -301,6 +309,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onDisconnect() {
+            L.debug("onDisconnect");
             if (mReplayMode) {
                 IcaConnector.removeSession(mSessionName);
             }
@@ -313,6 +322,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onConnecting() {
+            L.debug("onConnecting");
             if (mParent != null)
                 mParent.onConnecting();
             super.onConnecting();
@@ -320,6 +330,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onLogoffFailed() {
+            L.debug("onLogoffFailed");
             mLogonError = true;
             mConnected = false;
             mDisconnected = true;
@@ -327,11 +338,18 @@ public class ICASession extends _IICAClientEvents {
                 mParent.onDisconnect();
             super.onLogoffFailed();
         }
+
+        @Override
+        public void onConnect() {
+            L.debug("onConnect");
+            super.onConnect();
+        }
     }
 
     private class KeyboardListener extends _IKeyboardEvents {
         public KeyboardListener() {
             super();
+            L.info("подписались на события _IKeyboardEvents");
         }
 
         @Override
@@ -350,6 +368,7 @@ public class ICASession extends _IICAClientEvents {
     private class MouseListener extends _IMouseEvents {
         MouseListener() {
             super();
+            L.info("подписались на события _IMouseEvents");
         }
 
         @Override
