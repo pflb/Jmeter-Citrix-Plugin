@@ -1,7 +1,5 @@
 package ru.pflb.jmeter.icaplugin.gui.utils;
 
-import com.sun.istack.internal.Nullable;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -41,7 +39,6 @@ public class BrowseButton extends JButton {
      * @return Файл/папку, выбранный в обозревателе или null, если отменено
      */
     public
-    @Nullable
     File browse() {
         JFileChooser fc;
         if (mPath != null) {//проверяем, есть ли сохраненный путь

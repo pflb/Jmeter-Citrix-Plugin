@@ -1,5 +1,7 @@
 package ru.pflb.jmeter.icaplugin.ica;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com4j.ComException;
 import com4j.EventCookie;
 import com4j.ExecutionException;
@@ -12,7 +14,6 @@ import ru.pflb.jmeter.icaplugin.ica2com.events._IKeyboardEvents;
 import ru.pflb.jmeter.icaplugin.ica2com.events._IMouseEvents;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Описание<br/>
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public class ICASession extends _IICAClientEvents {
-    private static final Logger L = Logger.getLogger(ICASession.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(ICASession.class);
     private IMouse mMouse;
 
     private boolean mRecording;
@@ -60,6 +61,7 @@ public class ICASession extends _IICAClientEvents {
     }
 
     public void configureConnect(String ICAFile) {
+        L.info("Конфигурация соединения на основе ICA файла {}", ICAFile);
         ica.icaFile(ICAFile);
     }
 
@@ -82,7 +84,6 @@ public class ICASession extends _IICAClientEvents {
         ica.desiredColor(ICAColorDepth.valueOf(colorMode));
         ica.outputMode(OutputMode.valueOf(outputMode));
     }
-
 
     public void start() throws InterruptedException {
         mConnected = false;
@@ -206,6 +207,7 @@ public class ICASession extends _IICAClientEvents {
     }
 
     public boolean waitConnect(int count) throws InterruptedException {
+        L.info("waitConnect " + count);
         if (mConnected) {
             return true;
         } else if (count > 4) {
@@ -261,15 +263,18 @@ public class ICASession extends _IICAClientEvents {
     private class ClientListener extends _IICAClientEvents {
         public ClientListener() {
             super();
+            L.info("подписались на события _IICAClientEvents");
         }
 
         @Override
         public void onInitializing() {
+            L.debug("onInitializing");
             super.onInitializing();
         }
 
         @Override
         public void onConnectFailed() {
+            L.debug("onConnectFailed");
             if (mParent != null)
                 mParent.onError("Connect failed");
             super.onConnectFailed();
@@ -277,6 +282,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onLogon() {
+            L.debug("onLogon");
             if (mParent != null)
                 mParent.onLogon();
             if (!mReplayMode) {
@@ -288,10 +294,12 @@ public class ICASession extends _IICAClientEvents {
             mLogonError = false;
             mDisconnected = false;
             super.onLogon();
+            L.debug("mConnected = true");
         }
 
         @Override
         public void onLogonFailed() {
+            L.debug("onLogonFailed");
             mLogonError = true;
             mConnected = false;
             if (mParent != null)
@@ -301,6 +309,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onDisconnect() {
+            L.debug("onDisconnect");
             if (mReplayMode) {
                 IcaConnector.removeSession(mSessionName);
             }
@@ -313,6 +322,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onConnecting() {
+            L.debug("onConnecting");
             if (mParent != null)
                 mParent.onConnecting();
             super.onConnecting();
@@ -320,6 +330,7 @@ public class ICASession extends _IICAClientEvents {
 
         @Override
         public void onLogoffFailed() {
+            L.debug("onLogoffFailed");
             mLogonError = true;
             mConnected = false;
             mDisconnected = true;
@@ -327,11 +338,18 @@ public class ICASession extends _IICAClientEvents {
                 mParent.onDisconnect();
             super.onLogoffFailed();
         }
+
+        @Override
+        public void onConnect() {
+            L.debug("onConnect");
+            super.onConnect();
+        }
     }
 
     private class KeyboardListener extends _IKeyboardEvents {
         public KeyboardListener() {
             super();
+            L.info("подписались на события _IKeyboardEvents");
         }
 
         @Override
@@ -350,6 +368,7 @@ public class ICASession extends _IICAClientEvents {
     private class MouseListener extends _IMouseEvents {
         MouseListener() {
             super();
+            L.info("подписались на события _IMouseEvents");
         }
 
         @Override

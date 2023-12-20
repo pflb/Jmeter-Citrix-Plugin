@@ -3,11 +3,14 @@ package ru.pflb.jmeter.icaplugin;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.engine.util.NoThreadClone;
-import org.apache.jmeter.testelement.TestListener;
+import org.apache.jmeter.testelement.TestIterationListener;
+import org.apache.jmeter.testelement.TestStateListener;
+
 import ru.pflb.jmeter.icaplugin.ica.IcaConnector;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание<br/>
@@ -15,7 +18,7 @@ import java.util.logging.Logger;
  * @author Иванов Владимир.
  * @version 0.0.1
  */
-public class CitrixIcaConfig extends ConfigTestElement implements TestListener, NoThreadClone {
+public class CitrixIcaConfig extends ConfigTestElement implements TestIterationListener, TestStateListener, NoThreadClone {
     private static final String PROPERTY_HANDLE = "handler";
     private static final String PROPERTY_ICA_FILE = "icafile";
     private static final String PROPERTY_HOST = "host";
@@ -35,7 +38,7 @@ public class CitrixIcaConfig extends ConfigTestElement implements TestListener, 
     private static final String PROPERTY_REPLAY_MODE = "replaymode";
 
 
-    private static final Logger L = Logger.getLogger(CitrixIcaConfig.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaConfig.class);
     private static HashMap<String, CitrixIcaConfig> mConfigs = new HashMap<>();
 
     public CitrixIcaConfig() {

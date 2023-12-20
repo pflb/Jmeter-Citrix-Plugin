@@ -8,7 +8,8 @@ package net.sourceforge.javaocr.scanner;
 import java.awt.*;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to contain a pixel representation of an image.
@@ -30,7 +31,7 @@ public class PixelImage {
             -0.0900316316157106f,
             -0.06430830829693616f,
             0.05001757311983922f,};
-    private static final Logger LOG = Logger.getLogger(PixelImage.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PixelImage.class);
     /**
      * An array of pixels. This can be in RGBA or grayscale. By default, it is
      * RGBA, but if the <code>toGrayScale()</code> method has been called, each

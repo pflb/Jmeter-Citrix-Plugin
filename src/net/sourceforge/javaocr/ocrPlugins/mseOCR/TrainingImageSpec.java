@@ -5,7 +5,8 @@
 // Please see the accompanying LICENSE.txt for details.
 package net.sourceforge.javaocr.ocrPlugins.mseOCR;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A data structure to hold the file name and character range of training data.
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class TrainingImageSpec {
 
-    private static final Logger LOG = Logger.getLogger(TrainingImageSpec.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TrainingImageSpec.class);
     private String fileLocation;
     private CharacterRange charRange;
 

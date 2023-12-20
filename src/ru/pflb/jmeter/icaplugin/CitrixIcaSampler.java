@@ -21,8 +21,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание
@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public class CitrixIcaSampler extends AbstractSampler implements ICAListener, Interruptible {
-    private static final Logger L = Logger.getLogger(CitrixIcaSampler.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaSampler.class);
 
     private static final String PROPERTY_HANDLE = "handle";
     private static final String PROPERTY_CONTENT = "content";
@@ -111,7 +111,7 @@ public class CitrixIcaSampler extends AbstractSampler implements ICAListener, In
             return onInterrupted(result);
         } catch (Exception e) {
             setError(result, resultData.toString() + "\n" + e.getMessage());
-            L.log(Level.SEVERE, "Exception: ", e);
+            L.error("Exception: ", e);
             return result;
         }
 
@@ -153,7 +153,7 @@ public class CitrixIcaSampler extends AbstractSampler implements ICAListener, In
                     result.setSuccessful(false);
                 }
             } catch (ComException e) {
-                L.log(Level.SEVERE, "Uncaught Exception", e);
+                L.error("Uncaught Exception", e);
                 result.setSuccessful(false);
                 resultData.append(e.getMessage()).append("\n");
             }

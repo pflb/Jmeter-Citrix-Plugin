@@ -17,8 +17,8 @@ import ru.pflb.jmeter.icaplugin.ica2com.IScreenShot;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CitrixIcaRecorder extends GenericController implements ICAListener {
@@ -36,7 +36,7 @@ public class CitrixIcaRecorder extends GenericController implements ICAListener 
     private static final String PROPERTY_COLOR = "color";
     private static final String PROPERTY_RECORD = "record";
     private static final String PROPERTY_ICA_CONFIG = "icaconfig";
-    private static final Logger L = Logger.getLogger(CitrixIcaRecorder.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaRecorder.class);
     private CitrixIcaRecorderGui mGUI;
 
     private ICASession mSession;
@@ -260,7 +260,7 @@ public class CitrixIcaRecorder extends GenericController implements ICAListener 
             mGUI.configure(this);
         } catch (ComException e) {
             String error = "Can`t get COM object. Did you run 32-bit java?";
-            L.log(Level.SEVERE, error, e);
+            L.error(error, e);
             mGUI.onStop();
             mGUI.invokeError(error);
         } catch (InterruptedException e) {

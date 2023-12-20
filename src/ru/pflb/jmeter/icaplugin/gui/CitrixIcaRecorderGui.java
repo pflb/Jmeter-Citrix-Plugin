@@ -11,10 +11,11 @@ import java.awt.*;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CitrixIcaRecorderGui extends AbstractControllerGui {
-    private static final Logger L = Logger.getLogger(CitrixIcaRecorderGui.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(CitrixIcaRecorderGui.class);
     private static final String STATIC_LABEL = "Citrix ICA Recorder";
 
     private ConnectionPanel mConnectionPanel;

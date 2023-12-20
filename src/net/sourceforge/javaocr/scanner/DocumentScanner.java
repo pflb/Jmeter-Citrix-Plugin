@@ -7,7 +7,8 @@
 package net.sourceforge.javaocr.scanner;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to scan a document, breaking it into rows and character blocks.
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class DocumentScanner {
 
-    private static final Logger LOG = Logger.getLogger(DocumentScanner.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentScanner.class);
     /**
      * The maximum fraction a row's height can be of the previous row's height,
      * in order for the new (short) row to be merged in with the previous (tall)

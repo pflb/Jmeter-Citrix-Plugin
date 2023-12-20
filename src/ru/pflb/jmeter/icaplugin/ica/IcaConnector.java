@@ -5,7 +5,8 @@ import ru.pflb.jmeter.icaplugin.CitrixIcaRecorder;
 import ru.pflb.jmeter.icaplugin.CitrixIcaSampler;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Описание<br/>
@@ -14,11 +15,12 @@ import java.util.logging.Logger;
  * @version 0.0.1
  */
 public abstract class IcaConnector {
-    private static final Logger L = Logger.getLogger(IcaConnector.class.getCanonicalName());
+    private static final Logger L = LoggerFactory.getLogger(IcaConnector.class);
 
     private static HashMap<String, ICASession> mSessions = new HashMap<>();
 
     public static ICASession newRecordingSession(CitrixIcaRecorder recorder) {
+        L.info("Конфигурация сессии");
         ICASession session = new ICASession(false);
         if (recorder.getICAFile().isEmpty()) {
             session.configureConnect(recorder.getHost(), recorder.getPort(), recorder.getUser(), recorder.getPassword(),
@@ -26,14 +28,13 @@ public abstract class IcaConnector {
         } else {
             session.configureConnect(recorder.getICAFile());
         }
-
         String[] resolution = recorder.getResolution().split("x");
         session.configureScreen(Integer.parseInt(resolution[0]), Integer.parseInt(resolution[1]),
                 recorder.getColor(), "OutputModeNormal");
 
         session.setParent(recorder);
         session.setRecordParams(recorder.getRecord());
-
+        L.info("Сессия сконфигурирована");
         return session;
     }
 

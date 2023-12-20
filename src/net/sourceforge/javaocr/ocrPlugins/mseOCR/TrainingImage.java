@@ -7,7 +7,8 @@ package net.sourceforge.javaocr.ocrPlugins.mseOCR;
 
 import net.sourceforge.javaocr.scanner.PixelImage;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to hold a training image for a single character. A training image is a
@@ -40,7 +41,7 @@ public class TrainingImage extends PixelImage {
      * tolerance, will not be considered a candidate.
      */
     public static final float BOTTOM_WHITE_SPACE_FRACTION_TOLERANCE = 0.3f;
-    private static final Logger LOG = Logger.getLogger(TrainingImage.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TrainingImage.class);
     /**
      * Fraction of the row height which is occupied by complete whitespace above
      * the character.
